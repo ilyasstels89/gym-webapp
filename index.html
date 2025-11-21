@@ -1,191 +1,203 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=x-mac-cyrillic">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.2">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica; min-height: 16.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Tracker</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #1c1c1e);
+            color: var(--tg-theme-text-color, #ffffff);
+            padding: 20px;
+            text-align: center;
+            user-select: none;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid #333;
+            background-color: var(--tg-theme-secondary-bg-color, #2c2c2e);
+            color: var(--tg-theme-text-color, #fff);
+            font-size: 18px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+        .btn-primary {
+            background-color: var(--tg-theme-button-color, #007aff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+        }
+        .btn-danger {
+            background-color: #ff3b30;
+            color: white;
+            margin-top: 30px;
+        }
+        /* РўР°Р№РјРµСЂ */
+        #timer-screen {
+            display: none;
+            padding-top: 50px;
+        }
+        #timer-display {
+            font-size: 80px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="ru"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;title&gt;Gym Tracker&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;script src="https://telegram.org/js/telegram-web-app.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>body {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>background-color: var(--tg-theme-bg-color, #1c1c1e);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>color: var(--tg-theme-text-color, #ffffff);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>padding: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>input {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>padding: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>margin: 10px 0;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>border-radius: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>border: 1px solid #333;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>background-color: var(--tg-theme-secondary-bg-color, #2c2c2e);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>color: var(--tg-theme-text-color, #fff);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-size: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>box-sizing: border-box;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>.btn {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>padding: 15px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>border-radius: 12px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>border: none;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-size: 18px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>cursor: pointer;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>margin-top: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>transition: 0.2s;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>.btn-primary {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>background-color: var(--tg-theme-button-color, #007aff);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>color: var(--tg-theme-button-text-color, #ffffff);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>.btn-danger {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>background-color: #ff3b30;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>color: white;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>margin-top: 30px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>/* ’аймер */</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>#timer-screen {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>display: none;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>padding-top: 50px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>#timer-display {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-size: 80px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>font-variant-numeric: tabular-nums;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>.stat-box {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>background: rgba(255,255,255,0.1);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>padding: 10px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>border-radius: 8px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>margin-bottom: 20px;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;!-- ќЉђЂЌ ‚‚Ћ„Ђ --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;div id="input-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;div class="stat-box"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;h3 id="set-counter"&gt;Џодход Ь1&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;p style="opacity: 0.7"&gt;‚ремЯ тренировки: &lt;span id="total-time"&gt;00:00&lt;/span&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;input type="text" id="exercise" placeholder="Ќазвание упражнениЯ (†им)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;div style="display: flex; gap: 10px;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;input type="tel" id="weight" placeholder="‚ес (кг)"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;input type="tel" id="reps" placeholder="Џовторы"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;button class="btn btn-primary" onclick="logSet()"&gt;&#x2705; ‘делал и отдыхать&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;button class="btn btn-danger" onclick="finishWorkout()"&gt;&#x1F3C1; ‡акончить тренировку&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;!-- ќЉђЂЌ ’Ђ‰Њ…ђЂ --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;div id="timer-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;h2&gt;Ћтдых&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;div id="timer-display"&gt;01:30&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;button class="btn btn-primary" onclick="stopRest()"&gt;&#x1F4AA; Љ следующему подходу&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>&lt;p style="margin-top: 20px; opacity: 0.5;"&gt;+10 сек / -10 сек&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>let tg = window.Telegram.WebApp;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>tg.expand(); // Ќа весь экран</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>let setNumber = 1;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>let workoutData = [];</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>let workoutStartTime = Date.now();</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>let restInterval;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>let totalTimeInterval;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>// Ћбщий таймер тренировки</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>totalTimeInterval = setInterval(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let diff = Math.floor((Date.now() - workoutStartTime) / 1000);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let m = Math.floor(diff / 60).toString().padStart(2, '0');</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let s = (diff % 60).toString().padStart(2, '0');</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('total-time').innerText = `${m}:${s}`;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}, 1000);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>function logSet() {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let exercise = document.getElementById('exercise').value;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let weight = document.getElementById('weight').value;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let reps = document.getElementById('reps').value;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>if(!exercise || !weight) {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>tg.showAlert("‡аполни название и вес!");</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>// ‘охранЯем подход</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>workoutData.push({</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>set: setNumber,</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>exercise: exercise,</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>weight: weight,</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>reps: reps</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>setNumber++;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('set-counter').innerText = `Џодход Ь${setNumber}`;</p>
-<p class="p2"><span class="Apple-converted-space">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>// ‡апускаем отдых</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>startRest(90); // 90 секунд по умолчанию</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>function startRest(seconds) {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('input-screen').style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('timer-screen').style.display = 'block';</p>
-<p class="p2"><span class="Apple-converted-space">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let timeLeft = seconds;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>updateTimerDisplay(timeLeft);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>restInterval = setInterval(() =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>timeLeft--;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>updateTimerDisplay(timeLeft);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>if(timeLeft &lt;= 0) {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>tg.HapticFeedback.notificationOccurred('success'); // ‚ибрациЯ</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>stopRest();</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>}, 1000);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>function updateTimerDisplay(sec) {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let m = Math.floor(sec / 60).toString().padStart(2, '0');</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>let s = (sec % 60).toString().padStart(2, '0');</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('timer-display').innerText = `${m}:${s}`;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>function stopRest() {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>clearInterval(restInterval);</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('timer-screen').style.display = 'none';</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>document.getElementById('input-screen').style.display = 'block';</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>function finishWorkout() {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>if (workoutData.length === 0) {</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>tg.close();</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>// ЋтправлЯем данные боту</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>tg.sendData(JSON.stringify(workoutData));</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; &nbsp; &nbsp; </span>}</p>
-<p class="p1"><span class="Apple-converted-space">&nbsp; &nbsp; </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+
+    <!-- Р­РљР РђРќ Р’Р’РћР”Рђ -->
+    <div id="input-screen">
+        <div class="stat-box">
+            <h3 id="set-counter" style="margin:0; margin-bottom:5px;">РџРѕРґС…РѕРґ в„–1</h3>
+            <p style="margin:0; opacity: 0.6; font-size: 14px;">вЏ± Р’СЂРµРјСЏ С‚СЂРµРЅРёСЂРѕРІРєРё: <span id="total-time">00:00</span></p>
+        </div>
+
+        <div style="text-align: left; margin-bottom: 5px; opacity: 0.8; font-size: 14px;">РЈРїСЂР°Р¶РЅРµРЅРёРµ</div>
+        <input type="text" id="exercise" placeholder="РќР°РїСЂРёРјРµСЂ: Р–РёРј Р»РµР¶Р°">
+        
+        <div style="display: flex; gap: 10px;">
+            <div style="width: 50%;">
+                <div style="text-align: left; margin-bottom: 5px; opacity: 0.8; font-size: 14px;">Р’РµСЃ (РєРі)</div>
+                <input type="tel" id="weight" placeholder="0">
+            </div>
+            <div style="width: 50%;">
+                <div style="text-align: left; margin-bottom: 5px; opacity: 0.8; font-size: 14px;">РџРѕРІС‚РѕСЂС‹</div>
+                <input type="tel" id="reps" placeholder="0">
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="logSet()">вњ… Р“РѕС‚РѕРІРѕ (РћС‚РґС‹С…)</button>
+        <button class="btn btn-danger" onclick="finishWorkout()">рџЏЃ Р—Р°РєРѕРЅС‡РёС‚СЊ С‚СЂРµРЅРёСЂРѕРІРєСѓ</button>
+    </div>
+
+    <!-- Р­РљР РђРќ РўРђР™РњР•Р Рђ -->
+    <div id="timer-screen">
+        <h2 style="opacity: 0.7;">РћС‚РґС‹С…</h2>
+        <div id="timer-display">01:30</div>
+        
+        <button class="btn btn-primary" onclick="stopRest()">рџ’Є Рљ СЃР»РµРґСѓСЋС‰РµРјСѓ РїРѕРґС…РѕРґСѓ</button>
+        
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+            <button onclick="adjustTime(-10)" style="background:none; border:1px solid #555; color:#fff; padding: 10px 20px; border-radius: 8px;">-10 СЃРµРє</button>
+            <button onclick="adjustTime(+10)" style="background:none; border:1px solid #555; color:#fff; padding: 10px 20px; border-radius: 8px;">+10 СЃРµРє</button>
+        </div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); 
+
+        // РџРµСЂРµРјРµРЅРЅС‹Рµ
+        let setNumber = 1;
+        let workoutData = [];
+        let workoutStartTime = Date.now();
+        let restInterval;
+        let restTimeLeft = 90;
+
+        // РћР±С‰РёР№ С‚Р°Р№РјРµСЂ С‚СЂРµРЅРёСЂРѕРІРєРё
+        setInterval(() => {
+            let diff = Math.floor((Date.now() - workoutStartTime) / 1000);
+            let m = Math.floor(diff / 60).toString().padStart(2, '0');
+            let s = (diff % 60).toString().padStart(2, '0');
+            document.getElementById('total-time').innerText = `${m}:${s}`;
+        }, 1000);
+
+        function logSet() {
+            let exercise = document.getElementById('exercise').value;
+            let weight = document.getElementById('weight').value;
+            let reps = document.getElementById('reps').value;
+
+            if(!exercise) {
+                tg.showAlert("Р’РІРµРґРё РЅР°Р·РІР°РЅРёРµ СѓРїСЂР°Р¶РЅРµРЅРёСЏ!");
+                return;
+            }
+            if(!weight || !reps) {
+                tg.showAlert("Р’РІРµРґРё РІРµСЃ Рё РїРѕРІС‚РѕСЂРµРЅРёСЏ!");
+                return;
+            }
+
+            // РЎРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ
+            workoutData.push({
+                set: setNumber,
+                exercise: exercise,
+                weight: weight,
+                reps: reps
+            });
+
+            setNumber++;
+            document.getElementById('set-counter').innerText = `РџРѕРґС…РѕРґ в„–${setNumber}`;
+            
+            // РћС‡РёС‰Р°РµРј РїРѕР»СЏ РІРµСЃР°/РїРѕРІС‚РѕСЂРѕРІ (СѓРїСЂР°Р¶РЅРµРЅРёРµ РѕСЃС‚Р°РІР»СЏРµРј, РѕР±С‹С‡РЅРѕ РґРµР»Р°СЋС‚ С‚Рѕ Р¶Рµ СЃР°РјРѕРµ)
+            document.getElementById('weight').value = '';
+            document.getElementById('reps').value = '';
+
+            startRest(90); 
+        }
+
+        function startRest(seconds) {
+            document.getElementById('input-screen').style.display = 'none';
+            document.getElementById('timer-screen').style.display = 'block';
+            
+            restTimeLeft = seconds;
+            updateTimerDisplay(restTimeLeft);
+
+            restInterval = setInterval(() => {
+                restTimeLeft--;
+                updateTimerDisplay(restTimeLeft);
+                if(restTimeLeft <= 0) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    stopRest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(sec) {
+            let m = Math.floor(sec / 60).toString().padStart(2, '0');
+            let s = (sec % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${m}:${s}`;
+        }
+
+        function adjustTime(amount) {
+            restTimeLeft += amount;
+            if (restTimeLeft < 0) restTimeLeft = 0;
+            updateTimerDisplay(restTimeLeft);
+        }
+
+        function stopRest() {
+            clearInterval(restInterval);
+            document.getElementById('timer-screen').style.display = 'none';
+            document.getElementById('input-screen').style.display = 'block';
+        }
+
+        function finishWorkout() {
+            if (workoutData.length === 0) {
+                tg.close();
+                return;
+            }
+            tg.sendData(JSON.stringify(workoutData));
+        }
+    </script>
 </body>
 </html>
