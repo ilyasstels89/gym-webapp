@@ -7,31 +7,43 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --bg: #000; --card: #1c1c1e; --blue: #007aff; --text: #fff; --gray: #8e8e93; --green: #32d74b; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; user-select: none; margin:0; padding:10px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 15px; padding-bottom: 100px; user-select: none; margin:0; }
         
-        /* УПРОЩЕННЫЕ СТИЛИ ДЛЯ СКОРОСТИ */
-        h1 { font-size: 22px; margin: 10px 0; }
-        .info-row { display: flex; justify-content: space-between; color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+        h1 { font-size: 20px; margin: 0 0 5px 0; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; color: var(--gray); font-size: 14px; margin-bottom: 20px; }
         
-        .ex-card { background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 12px; border: 1px solid #333; }
+        .ex-card { background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 15px; border: 1px solid #333; }
         .ex-head { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 8px; }
-        .ex-name { font-weight: bold; font-size: 16px; width: 70%; }
-        .ex-rest { font-size: 12px; background: #333; padding: 2px 6px; border-radius: 4px; height: fit-content; }
+        .ex-name { font-weight: bold; font-size: 16px; width: 75%; }
+        .ex-rest { font-size: 11px; background: #333; padding: 2px 6px; border-radius: 4px; height: fit-content; display: flex; align-items: center;}
 
-        .set-row { display: flex; align-items: center; margin-bottom: 8px; background: #000; padding: 5px; border-radius: 8px; }
-        .set-n { color: #555; width: 20px; font-size: 12px; }
-        input { width: 100%; background: #1c1c1e; border: 1px solid #444; color: #fff; padding: 8px; border-radius: 6px; text-align: center; margin: 0 5px; font-size: 16px; }
-        input:disabled { opacity: 0.5; background: #111; }
+        /* ЗАГОЛОВКИ СТОЛБЦОВ */
+        .col-headers { display: flex; margin-bottom: 5px; font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px;}
+        .col-spacer { width: 25px; } /* Место под номер */
+        .col-w { flex: 1; text-align: center; }
+        .col-r { flex: 1; text-align: center; }
+        .col-check { width: 36px; }
+
+        .set-row { display: flex; align-items: center; margin-bottom: 8px; background: #0b0b0b; padding: 6px; border-radius: 8px; }
+        .set-n { color: #555; width: 25px; font-size: 12px; text-align: center;}
         
-        .check { width: 36px; height: 36px; background: #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid #444; }
+        input { 
+            width: 100%; background: #1c1c1e; border: 1px solid #333; 
+            color: #fff; padding: 10px; border-radius: 6px; text-align: center; margin: 0 5px; font-size: 16px; 
+            font-weight: bold;
+        }
+        input:focus { border-color: var(--blue); outline: none; }
+        input:disabled { opacity: 0.4; background: #111; border-color: #222; }
+        
+        .check { width: 36px; height: 36px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid #333; font-size: 18px; color: #444; }
         .check.done { background: var(--green); border-color: var(--green); color: #000; }
 
-        .btn-finish { width: 100%; padding: 15px; background: #ff3b30; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 20px; }
+        .btn-finish { width: 100%; padding: 16px; background: #ff3b30; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 20px; }
 
         /* MODAL */
         #rest-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; flex-direction: column; justify-content: center; align-items: center; }
-        .timer-big { font-size: 80px; font-weight: bold; font-variant-numeric: tabular-nums; }
-        .btn-skip { background: var(--blue); color: #fff; padding: 12px 30px; border-radius: 10px; border: none; font-size: 16px; }
+        .timer-big { font-size: 90px; font-weight: bold; font-variant-numeric: tabular-nums; margin-bottom: 30px;}
+        .btn-skip { background: #333; color: #fff; padding: 15px 40px; border-radius: 30px; border: 1px solid #444; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -39,90 +51,110 @@
     <h1 id="t">Загрузка...</h1>
     <div class="info-row">
         <span id="d">...</span>
-        <span id="gt" style="background:#333; padding:2px 6px; border-radius:4px;">00:00</span>
+        <span id="gt" style="font-family: monospace; background:#222; padding:4px 8px; border-radius:6px;">00:00</span>
     </div>
 
     <div id="list"></div>
 
-    <div style="text-align: center; margin-top: 30px;">
-        <p style="color:#666; font-size:12px;">Сложность (1-10)</p>
-        <input type="range" id="rpe" min="1" max="10" value="7" style="accent-color: var(--blue);">
-        <button class="btn-finish" onclick="fin()">ЗАВЕРШИТЬ</button>
+    <div style="text-align: center; margin-top: 40px;">
+        <p style="color:#666; font-size:12px; margin-bottom: 10px;">Сложность тренировки (1-10)</p>
+        <input type="range" id="rpe" min="1" max="10" value="7" style="accent-color: var(--blue); margin-bottom: 20px;">
+        <button class="btn-finish" onclick="fin()">🏁 ЗАВЕРШИТЬ</button>
     </div>
 
     <!-- REST -->
     <div id="rest-modal">
+        <div style="color: #888; font-size: 18px;">Отдых</div>
         <div class="timer-big" id="rt">00:00</div>
         <button class="btn-skip" onclick="stopRest()">Пропустить</button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp; tg.expand();
-        let w = { t: "Ошибка", d: "", e: [] };
+        let tg = window.Telegram.WebApp; 
+        tg.expand();
+        
+        let w = { t: "Ошибка данных", d: "", e: [] };
         let start = Date.now();
         let rInt;
         const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
 
-        // 1. РАСПАКОВКА ДАННЫХ
+        // 1. РАСПАКОВКА
         const p = new URLSearchParams(location.search);
         const raw = p.get('data');
         if(raw) {
-            try { w = JSON.parse(decodeURIComponent(raw)); } catch(e){ console.log(e); }
+            try { w = JSON.parse(decodeURIComponent(raw)); } catch(e){ console.error(e); }
         }
 
-        // 2. ОТРИСОВКА (Используем короткие ключи: t, d, e, n, s, r, w, rt)
+        // 2. ОТРИСОВКА
         document.getElementById('t').innerText = w.t || "Тренировка";
         document.getElementById('d').innerText = "⏱ " + (w.d || "? мин");
 
         const list = document.getElementById('list');
-        // e = exercises
+        
         (w.e || []).forEach((ex, i) => {
             let setsHtml = '';
-            // s = sets (кол-во подходов)
             const count = ex.s || 3;
+            
             for(let j=0; j<count; j++) {
-                // w = weight, r = reps, rt = rest time
                 setsHtml += `
                 <div class="set-row">
                     <div class="set-n">${j+1}</div>
-                    <input type="tel" id="w-${i}-${j}" value="${ex.w || ''}" placeholder="кг">
-                    <input type="tel" id="r-${i}-${j}" value="${ex.r || ''}" placeholder="повт">
-                    <div class="check" id="btn-${i}-${j}" onclick="toggle(${i},${j},${ex.rt||60})">✓</div>
+                    <input type="tel" id="w-${i}-${j}" value="${ex.w || ''}" placeholder="-">
+                    <input type="tel" id="r-${i}-${j}" value="${ex.r || ''}" placeholder="-">
+                    <div class="check" id="btn-${i}-${j}" onclick="toggle(${i},${j},${ex.rt||0})">✓</div>
                 </div>`;
             }
-            // n = name
+
+            // Добавляем заголовки колонок внутрь карточки
             list.innerHTML += `
             <div class="ex-card">
                 <div class="ex-head">
                     <div class="ex-name">${ex.n}</div>
-                    <div class="ex-rest">🕐 ${ex.rt||60}с</div>
+                    <div class="ex-rest">🕐 ${ex.rt > 0 ? ex.rt + 'с' : 'Нет'}</div>
                 </div>
+                
+                <div class="col-headers">
+                    <div class="col-spacer"></div>
+                    <div class="col-w">Вес (кг)</div>
+                    <div class="col-r">Повторы</div>
+                    <div class="col-check"></div>
+                </div>
+
                 ${setsHtml}
             </div>`;
         });
 
-        // 3. ЛОГИКА
+        // 3. ЛОГИКА КЛИКА
         function toggle(i, j, rest) {
             const b = document.getElementById(`btn-${i}-${j}`);
             const inpW = document.getElementById(`w-${i}-${j}`);
             const inpR = document.getElementById(`r-${i}-${j}`);
             
             if(b.classList.contains('done')) {
+                // Отмена
                 b.classList.remove('done');
                 inpW.disabled = false; inpR.disabled = false;
             } else {
+                // Сделано
                 b.classList.add('done');
                 inpW.disabled = true; inpR.disabled = true;
                 tg.HapticFeedback.notificationOccurred('success');
-                runRest(rest);
+                
+                // ЗАПУСК ТАЙМЕРА (Только если отдых > 0)
+                if(rest > 0) {
+                    runRest(rest);
+                }
             }
         }
 
+        // 4. ТАЙМЕР
         function runRest(sec) {
             document.getElementById('rest-modal').style.display = 'flex';
             let t = sec;
             document.getElementById('rt').innerText = fmt(t);
+            
             if(rInt) clearInterval(rInt);
+            
             rInt = setInterval(() => {
                 t--;
                 document.getElementById('rt').innerText = fmt(t);
@@ -144,30 +176,42 @@
             return Math.floor(s/60).toString().padStart(2,'0') + ':' + (s%60).toString().padStart(2,'0');
         }
 
+        // Общее время
         setInterval(() => {
             document.getElementById('gt').innerText = fmt(Math.floor((Date.now()-start)/1000));
         }, 1000);
 
+        // 5. ЗАВЕРШЕНИЕ
         function fin() {
-            const res = [];
-            (w.e || []).forEach((ex, i) => {
-                const count = ex.s || 3;
-                let done = 0; let lastW = ex.w;
-                for(let j=0; j<count; j++) {
-                    if(document.getElementById(`btn-${i}-${j}`).classList.contains('done')) {
-                        done++;
-                        lastW = document.getElementById(`w-${i}-${j}`).value;
+            try {
+                const res = [];
+                (w.e || []).forEach((ex, i) => {
+                    const count = ex.s || 3;
+                    let done = 0; let lastW = ex.w;
+                    for(let j=0; j<count; j++) {
+                        if(document.getElementById(`btn-${i}-${j}`).classList.contains('done')) {
+                            done++;
+                            lastW = document.getElementById(`w-${i}-${j}`).value;
+                        }
                     }
-                }
-                if(done > 0) res.push({ name: ex.n, weight: lastW, reps: ex.r, sets_done: done });
-            });
-            
-            const data = {
-                title: w.t,
-                difficulty: document.getElementById('rpe').value,
-                exercises: res
-            };
-            tg.sendData(JSON.stringify(data));
+                    if(done > 0) res.push({ name: ex.n, weight: lastW, reps: ex.r, sets_done: done });
+                });
+                
+                const data = {
+                    title: w.t,
+                    difficulty: document.getElementById('rpe').value,
+                    exercises: res
+                };
+                
+                // Отправляем данные
+                tg.sendData(JSON.stringify(data));
+                
+                // Принудительно закрываем (на случай лага)
+                setTimeout(() => tg.close(), 100);
+                
+            } catch (e) {
+                alert("Ошибка: " + e); // Покажет ошибку, если что-то не так с данными
+            }
         }
     </script>
 </body>
