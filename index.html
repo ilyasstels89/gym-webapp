@@ -6,7 +6,7 @@
     <title>AI Fitness</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --bg: #000; --card: #1c1c1e; --blue: #007aff; --text: #fff; --gray: #8e8e93; --green: #32d74b; }
+        :root { --bg: #000; --card: #1c1c1e; --blue: #007aff; --text: #fff; --gray: #8e8e93; --green: #32d74b; --orange: #ff9500; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 15px; padding-bottom: 100px; user-select: none; margin:0; }
         
         h1 { font-size: 20px; margin: 0 0 5px 0; }
@@ -17,9 +17,8 @@
         .ex-name { font-weight: bold; font-size: 16px; width: 75%; }
         .ex-rest { font-size: 11px; background: #333; padding: 2px 6px; border-radius: 4px; height: fit-content; display: flex; align-items: center;}
 
-        /* ЗАГОЛОВКИ СТОЛБЦОВ */
         .col-headers { display: flex; margin-bottom: 5px; font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px;}
-        .col-spacer { width: 25px; } /* Место под номер */
+        .col-spacer { width: 25px; } 
         .col-w { flex: 1; text-align: center; }
         .col-r { flex: 1; text-align: center; }
         .col-check { width: 36px; }
@@ -29,21 +28,25 @@
         
         input { 
             width: 100%; background: #1c1c1e; border: 1px solid #333; 
-            color: #fff; padding: 10px; border-radius: 6px; text-align: center; margin: 0 5px; font-size: 16px; 
-            font-weight: bold;
+            color: #fff; padding: 10px; border-radius: 6px; text-align: center; margin: 0 5px; font-size: 16px; font-weight: bold;
         }
         input:focus { border-color: var(--blue); outline: none; }
         input:disabled { opacity: 0.4; background: #111; border-color: #222; }
         
+        /* КНОПКИ */
         .check { width: 36px; height: 36px; background: #222; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 1px solid #333; font-size: 18px; color: #444; }
         .check.done { background: var(--green); border-color: var(--green); color: #000; }
+        
+        .play-btn { width: 30px; height: 30px; background: #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-right: 5px; cursor: pointer; color: var(--blue); border: 1px solid #444; }
 
         .btn-finish { width: 100%; padding: 16px; background: #ff3b30; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 20px; }
 
         /* MODAL */
-        #rest-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; flex-direction: column; justify-content: center; align-items: center; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; flex-direction: column; justify-content: center; align-items: center; }
+        #modal-title { color: #888; font-size: 20px; margin-bottom: 10px;}
         .timer-big { font-size: 90px; font-weight: bold; font-variant-numeric: tabular-nums; margin-bottom: 30px;}
         .btn-skip { background: #333; color: #fff; padding: 15px 40px; border-radius: 30px; border: 1px solid #444; font-size: 16px; }
+        .btn-skip.work { border-color: var(--orange); color: var(--orange); } /* Стиль для рабочего таймера */
     </style>
 </head>
 <body>
@@ -57,26 +60,32 @@
     <div id="list"></div>
 
     <div style="text-align: center; margin-top: 40px;">
-        <p style="color:#666; font-size:12px; margin-bottom: 10px;">Сложность тренировки (1-10)</p>
+        <p style="color:#666; font-size:12px; margin-bottom: 10px;">Сложность (1-10)</p>
         <input type="range" id="rpe" min="1" max="10" value="7" style="accent-color: var(--blue); margin-bottom: 20px;">
         <button class="btn-finish" onclick="fin()">🏁 ЗАВЕРШИТЬ</button>
     </div>
 
-    <!-- REST -->
-    <div id="rest-modal">
-        <div style="color: #888; font-size: 18px;">Отдых</div>
-        <div class="timer-big" id="rt">00:00</div>
-        <button class="btn-skip" onclick="stopRest()">Пропустить</button>
+    <!-- ТАЙМЕР (Универсальный: и для Работы, и для Отдыха) -->
+    <div id="modal">
+        <div id="modal-title">Отдых</div>
+        <div class="timer-big" id="timer-val">00:00</div>
+        <button id="modal-btn" class="btn-skip" onclick="stopTimer()">Пропустить</button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp; 
-        tg.expand();
-        
-        let w = { t: "Ошибка данных", d: "", e: [] };
+        let tg = window.Telegram.WebApp; tg.expand();
+        let w = { t: "Ошибка", d: "", e: [] };
         let start = Date.now();
-        let rInt;
-        const beep = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+        let timerInt;
+        
+        // ЗВУК (Громкий "бип" 3 раза)
+        const beepSound = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+        function playAlarm() {
+            beepSound.play();
+            setTimeout(() => beepSound.play(), 600);
+            setTimeout(() => beepSound.play(), 1200);
+            tg.HapticFeedback.notificationOccurred('error'); // Длинная вибрация
+        }
 
         // 1. РАСПАКОВКА
         const p = new URLSearchParams(location.search);
@@ -85,27 +94,35 @@
             try { w = JSON.parse(decodeURIComponent(raw)); } catch(e){ console.error(e); }
         }
 
-        // 2. ОТРИСОВКА
         document.getElementById('t').innerText = w.t || "Тренировка";
         document.getElementById('d').innerText = "⏱ " + (w.d || "? мин");
-
         const list = document.getElementById('list');
         
+        // 2. ОТРИСОВКА
         (w.e || []).forEach((ex, i) => {
             let setsHtml = '';
             const count = ex.s || 3;
-            
+            // u = unit (reps или sec). Если sec, то показываем таймер запуска
+            const isTime = ex.u === 'sec'; 
+
             for(let j=0; j<count; j++) {
+                // Если упражнение на время, добавляем кнопку PLAY
+                let playBtn = isTime 
+                    ? `<div class="play-btn" onclick="runWorkTimer(${ex.r})">▶</div>` 
+                    : '';
+
                 setsHtml += `
                 <div class="set-row">
                     <div class="set-n">${j+1}</div>
                     <input type="tel" id="w-${i}-${j}" value="${ex.w || ''}" placeholder="-">
+                    
+                    ${playBtn} <!-- Кнопка таймера (если планка/бег) -->
+                    
                     <input type="tel" id="r-${i}-${j}" value="${ex.r || ''}" placeholder="-">
                     <div class="check" id="btn-${i}-${j}" onclick="toggle(${i},${j},${ex.rt||0})">✓</div>
                 </div>`;
             }
 
-            // Добавляем заголовки колонок внутрь карточки
             list.innerHTML += `
             <div class="ex-card">
                 <div class="ex-head">
@@ -116,7 +133,7 @@
                 <div class="col-headers">
                     <div class="col-spacer"></div>
                     <div class="col-w">Вес (кг)</div>
-                    <div class="col-r">Повторы</div>
+                    <div class="col-r">${isTime ? 'ВРЕМЯ (СЕК)' : 'ПОВТОРЫ'}</div>
                     <div class="col-check"></div>
                 </div>
 
@@ -124,64 +141,73 @@
             </div>`;
         });
 
-        // 3. ЛОГИКА КЛИКА
+        // 3. ЛОГИКА ТАЙМЕРОВ
+        function runTimerCommon(seconds, title, isWork) {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('modal-title').innerText = title;
+            
+            // Красим кнопку если это РАБОТА
+            const btn = document.getElementById('modal-btn');
+            if(isWork) {
+                btn.classList.add('work');
+                btn.innerText = "Стоп (Я всё)";
+            } else {
+                btn.classList.remove('work');
+                btn.innerText = "Пропустить";
+            }
+
+            let t = seconds;
+            document.getElementById('timer-val').innerText = fmt(t);
+            
+            if(timerInt) clearInterval(timerInt);
+            
+            timerInt = setInterval(() => {
+                t--;
+                document.getElementById('timer-val').innerText = fmt(t);
+                if(t<=0) {
+                    clearInterval(timerInt);
+                    playAlarm(); // Звук х3
+                    setTimeout(stopTimer, 2000);
+                }
+            }, 1000);
+        }
+
+        // Таймер для УПРАЖНЕНИЯ (Планка, Бег)
+        function runWorkTimer(sec) {
+            runTimerCommon(sec, "🔥 Работаем!", true);
+        }
+
+        // Таймер для ОТДЫХА
         function toggle(i, j, rest) {
             const b = document.getElementById(`btn-${i}-${j}`);
             const inpW = document.getElementById(`w-${i}-${j}`);
             const inpR = document.getElementById(`r-${i}-${j}`);
             
             if(b.classList.contains('done')) {
-                // Отмена
                 b.classList.remove('done');
                 inpW.disabled = false; inpR.disabled = false;
             } else {
-                // Сделано
                 b.classList.add('done');
                 inpW.disabled = true; inpR.disabled = true;
                 tg.HapticFeedback.notificationOccurred('success');
                 
-                // ЗАПУСК ТАЙМЕРА (Только если отдых > 0)
                 if(rest > 0) {
-                    runRest(rest);
+                    runTimerCommon(rest, "Отдых", false);
                 }
             }
         }
 
-        // 4. ТАЙМЕР
-        function runRest(sec) {
-            document.getElementById('rest-modal').style.display = 'flex';
-            let t = sec;
-            document.getElementById('rt').innerText = fmt(t);
-            
-            if(rInt) clearInterval(rInt);
-            
-            rInt = setInterval(() => {
-                t--;
-                document.getElementById('rt').innerText = fmt(t);
-                if(t<=0) {
-                    clearInterval(rInt);
-                    beep.play();
-                    tg.HapticFeedback.notificationOccurred('warning');
-                    setTimeout(stopRest, 1000);
-                }
-            }, 1000);
-        }
-
-        function stopRest() {
-            clearInterval(rInt);
-            document.getElementById('rest-modal').style.display = 'none';
+        function stopTimer() {
+            clearInterval(timerInt);
+            document.getElementById('modal').style.display = 'none';
         }
 
         function fmt(s) {
             return Math.floor(s/60).toString().padStart(2,'0') + ':' + (s%60).toString().padStart(2,'0');
         }
+        setInterval(() => { document.getElementById('gt').innerText = fmt(Math.floor((Date.now()-start)/1000)); }, 1000);
 
-        // Общее время
-        setInterval(() => {
-            document.getElementById('gt').innerText = fmt(Math.floor((Date.now()-start)/1000));
-        }, 1000);
-
-        // 5. ЗАВЕРШЕНИЕ
+        // 4. ЗАВЕРШЕНИЕ
         function fin() {
             try {
                 const res = [];
@@ -202,16 +228,9 @@
                     difficulty: document.getElementById('rpe').value,
                     exercises: res
                 };
-                
-                // Отправляем данные
                 tg.sendData(JSON.stringify(data));
-                
-                // Принудительно закрываем (на случай лага)
                 setTimeout(() => tg.close(), 100);
-                
-            } catch (e) {
-                alert("Ошибка: " + e); // Покажет ошибку, если что-то не так с данными
-            }
+            } catch (e) { alert("Ошибка: " + e); }
         }
     </script>
 </body>
